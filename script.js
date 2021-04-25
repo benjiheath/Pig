@@ -38,19 +38,6 @@ const activatePlayer0 = function () {
   player0El.classList.add('player--active');
 };
 
-// Starting/reset conditions
-const startingConditions = function () {
-  score0El.textContent = 0;
-  score1El.textContent = 0;
-  totalScore0El.textContent = 0;
-  totalScore1El.textContent = 0;
-  diceEl.classList.add('hidden');
-  activatePlayer0();
-  modal.classList.remove('modal');
-  modal.classList.add('hidden');
-};
-startingConditions();
-
 /* ----------------------------------------------------------------------------------------------
 ------------ State ------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------*/
@@ -65,6 +52,23 @@ let diceRoll = 0;
 const diceRollFunction = function () {
   diceRoll = Math.ceil(Math.random() * 6);
 };
+
+// Starting/reset conditions
+const startingConditions = function () {
+  score0El.textContent = 0;
+  score1El.textContent = 0;
+  totalScore0El.textContent = 0;
+  totalScore1El.textContent = 0;
+  score0 = 0;
+  score1 = 0;
+  totalScore0 = 0;
+  totalScore1 = 0;
+  diceEl.classList.add('hidden');
+  activatePlayer0();
+  modal.classList.remove('modal');
+  modal.classList.add('hidden');
+};
+startingConditions();
 
 /* ---------------------------------------------------------------------------------------------
 ------------Buttons ------------------------------------------------------------------
@@ -82,6 +86,7 @@ btnRoll.addEventListener('click', function () {
       score0 = 0;
       score0El.textContent = score0;
     } else {
+      score0 += diceRoll;
       score0El.textContent = score0 += diceRoll; //adds rolled dice value to score
     }
   } else if (player1El.classList.contains('player--active')) {
@@ -90,6 +95,7 @@ btnRoll.addEventListener('click', function () {
       score1 = 0;
       score1El.textContent = score1;
     } else {
+      score1 += diceRoll;
       score1El.textContent = score1 += diceRoll; //adds rolled dice value to score
     }
   }

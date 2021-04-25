@@ -12,6 +12,6 @@ The game logic is outlined in the flow-chart below. Using it as a guideline, I t
 
 Note: only the JS was coded from scratch; the index and stylesheet were provided as templates in the course. However I did implement a modal window for the player-winning condition.
 
-[My demo](https://clever-ardinghelli-b07a72.netlify.app/)
+[My demo](https://musing-brown-2292dc.netlify.app/)
 
-![Alt Text](https://i.gyazo.com/eb1be8cf5ed5d49b5788ef4283dbe798.gif)
+![Alt Text](https://i.gyazo.com/6e66d3eafbc779d3215f590e0edf9286.gif)
