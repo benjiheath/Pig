@@ -12,7 +12,7 @@ Final version was improved using further guidance from the course. Here I utiliz
 
 # Demo
 
-Note: only the JS was coded from scratch; the index and stylesheet were provided as templates in the course. I also implemented a modal window for the player-winning condition in the first version.
+Note: only the JS was coded from scratch; the index and stylesheet were provided as templates in the course.
 
 [My demo](https://musing-brown-2292dc.netlify.app/)
 
