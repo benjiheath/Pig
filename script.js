@@ -1,137 +1,91 @@
 'use strict';
 
-/* ----------------------------------------------------------------------------------------------
-------------Element Selection ------------------------------------------------------------------
-----------------------------------------------------------------------------------------------*/
-
-// Selection variables
+// element selections
 const player0El = document.querySelector('.player--0');
 const player1El = document.querySelector('.player--1');
-const totalScore0El = document.querySelector('#score--0');
-const totalScore1El = document.querySelector('#score--1');
-const score0El = document.querySelector('#current--0');
-const score1El = document.querySelector('#current--1');
+const score0El = document.getElementById('score--0');
+const score1El = document.getElementById('score--1');
 const diceEl = document.querySelector('.dice');
+const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
-const btnNew = document.querySelector('.btn--new');
-const image = document.querySelector('img');
-const modal = document.querySelector('#modal');
-const modalMsg = document.querySelector('.modalmsg');
-const modalBtnNew = document.querySelector('.btn--modal');
+const current0El = document.querySelector('#current--0');
+const current1El = document.querySelector('#current--1');
 
-/* ----------------------------------------------------------------------------------------------
-------------Functions------------------------------------------------------------------
-----------------------------------------------------------------------------------------------*/
-// reveal dice for roll button
-const revealDice = function () {
-  diceEl.classList.remove('hidden');
+// functions
+
+//! if player rolls a 1
+const switchPlayer = function () {
+  document.getElementById(`current--${activePlayer}`).textContent = 0;
+  currentScore = 0; // resets score
+  activePlayer = activePlayer === 0 ? 1 : 0; //if 0, change to 1; if not 0, change to 0
+
+  player0El.classList.toggle('player--active'); // switching active player class
+  player1El.classList.toggle('player--active');
 };
 
-// player activation
-const activatePlayer1 = function () {
-  player0El.classList.remove('player--active');
-  player1El.classList.add('player--active');
-};
-const activatePlayer0 = function () {
-  player1El.classList.remove('player--active');
-  player0El.classList.add('player--active');
-};
+let playing, activePlayer, scores, currentScore; // declaring state variables for starting conditions
 
-/* ----------------------------------------------------------------------------------------------
------------- State ------------------------------------------------------------------
-----------------------------------------------------------------------------------------------*/
-// Scores
-let score0 = 0; //
-let score1 = 0; //
-let totalScore0 = 0;
-let totalScore1 = 0;
+//! starting conditions
+const init = function () {
+  playing = 1; //
+  scores = [0, 0]; // TOTAL scores
+  currentScore = 0;
+  activePlayer = 0;
 
-// Dice roll
-let diceRoll = 0;
-const diceRollFunction = function () {
-  diceRoll = Math.ceil(Math.random() * 6);
-};
-
-// Starting/reset conditions
-const startingConditions = function () {
   score0El.textContent = 0;
   score1El.textContent = 0;
-  totalScore0El.textContent = 0;
-  totalScore1El.textContent = 0;
-  score0 = 0;
-  score1 = 0;
-  totalScore0 = 0;
-  totalScore1 = 0;
+  current0El.textContent = 0;
+  current1El.textContent = 0;
+
   diceEl.classList.add('hidden');
-  activatePlayer0();
-  modal.classList.remove('modal');
-  modal.classList.add('hidden');
+  player0El.classList.remove('player--winner');
+  player1El.classList.remove('player--winner');
+  player0El.classList.add('player--active');
+  player1El.classList.remove('player--active');
 };
-startingConditions();
+init();
 
-/* ---------------------------------------------------------------------------------------------
-------------Buttons ------------------------------------------------------------------
-----------------------------------------------------------------------------------------------*/
-
-// Roll Dice button
+// Dice rolling btn
 btnRoll.addEventListener('click', function () {
-  revealDice();
-  diceRollFunction();
-  image.src = `dice-${diceRoll}.png`; //sets dice image to rolled value
-  console.log(diceRoll);
-  if (player0El.classList.contains('player--active')) {
-    if (diceRoll === 1) {
-      activatePlayer1(); // switch player if rolled a 1
-      score0 = 0;
-      score0El.textContent = score0;
+  // button disabled if a player has won
+  if (playing) {
+    const dice = Math.ceil(Math.random() * 6); // diceroll
+    diceEl.classList.remove('hidden'); // reveal dice
+    diceEl.src = `dice-${dice}.png`; // dice image corresponds to dice value
+
+    if (dice !== 1) {
+      currentScore += dice;
+      document.getElementById(
+        `current--${activePlayer}` // changes current score based on activePlayer variable
+      ).textContent = currentScore;
     } else {
-      score0 += diceRoll;
-      score0El.textContent = score0 += diceRoll; //adds rolled dice value to score
-    }
-  } else if (player1El.classList.contains('player--active')) {
-    if (diceRoll === 1) {
-      activatePlayer0(); // switch player if rolled a 1
-      score1 = 0;
-      score1El.textContent = score1;
-    } else {
-      score1 += diceRoll;
-      score1El.textContent = score1 += diceRoll; //adds rolled dice value to score
+      switchPlayer();
     }
   }
 });
 
-// Hold button
+// HOLD btn
 btnHold.addEventListener('click', function () {
-  if (player0El.classList.contains('player--active')) {
-    totalScore0 += score0;
-    score0 = 0;
-    score0El.textContent = score0;
-    totalScore0El.textContent = totalScore0;
-    if (totalScore0 >= 50) {
-      modalMsg.textContent = 'Player 1 Wins!';
-      modal.classList.remove('hidden');
-      modal.classList.add('modal');
+  // button disabled if a player has won
+  if (playing) {
+    // add current score to active player's total score
+    scores[activePlayer] += currentScore;
+    document.getElementById(`score--${activePlayer}`).textContent =
+      scores[activePlayer];
+    //check if score >= 100
+    if (scores[activePlayer] >= 100) {
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.add('player--winner');
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.remove('player--active');
+      playing = 0;
     } else {
-      activatePlayer1();
-    }
-  } else if (player1El.classList.contains('player--active')) {
-    totalScore1 += score1;
-    score1 = 0;
-    score1El.textContent = score1;
-    totalScore1El.textContent = totalScore1;
-    if (totalScore1 >= 50) {
-      modalMsg.textContent = 'Player 2 Wins!';
-      modal.classList.remove('hidden');
-      modal.classList.add('modal');
-    } else {
-      activatePlayer0();
+      switchPlayer();
     }
   }
 });
 
-//New game / reset button
-btnNew.addEventListener('click', startingConditions);
-
-//modal newgame/reset button
-modalBtnNew.addEventListener('click', startingConditions);
+btnNew.addEventListener('click', init);
